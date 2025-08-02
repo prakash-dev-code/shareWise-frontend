@@ -57,7 +57,7 @@ const ChildLayout: React.FC<child> = ({ children }) => {
     router.push("/");
     // await logout();
     localStorage.clear();
-    // setIsAuthenticated(false);
+    setIsAuthenticated(false);
     toast.success("Logout successful");
     setIsModalOpen(false);
   };
