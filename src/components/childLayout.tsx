@@ -8,6 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { Button, Modal } from "antd";
 import { FaRegArrowAltCircleUp } from "react-icons/fa";
 import { child } from "@/types/common";
+import { useAuth } from "@/context/authContext";
 
 const montserratConfig = Montserrat({
   subsets: ["latin"],
@@ -20,11 +21,12 @@ const PUBLIC_ROUTES = ["/", "/signup"];
 const ChildLayout: React.FC<child> = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  /** Check token in browser localStorage */
   const checkAuthToken = () => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
@@ -33,14 +35,16 @@ const ChildLayout: React.FC<child> = ({ children }) => {
     return false;
   };
 
+  /** Set auth state on mount */
   useEffect(() => {
     const tokenExists = checkAuthToken();
     setIsAuthenticated(tokenExists);
     setLoading(false);
   }, []);
 
+  /** Handle route protection */
   useEffect(() => {
-    if (loading) return; // Wait for loading to finish
+    if (loading) return;
 
     const tokenExists = checkAuthToken();
     const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
@@ -55,9 +59,8 @@ const ChildLayout: React.FC<child> = ({ children }) => {
 
   const handleLogout = async () => {
     router.push("/");
-    // await logout();
-    localStorage.clear();
     setIsAuthenticated(false);
+    localStorage.clear();
     toast.success("Logout successful");
     setIsModalOpen(false);
   };
@@ -69,7 +72,7 @@ const ChildLayout: React.FC<child> = ({ children }) => {
       <div className="max-w-[1920px] m-auto flex flex-col min-h-screen h-full">
         <div className="text-center pt-4">
           <h1 className="text-4xl font-semibold">ShareWise</h1>
-          <p className="text-sm font-normal mt-1">
+          <p className="text-sm font-normal mt-1 pb-1">
             Knowledge Sharing Platform with AI Summarization
           </p>
         </div>
@@ -92,7 +95,6 @@ const ChildLayout: React.FC<child> = ({ children }) => {
         <div className="text-center mt-auto pt-2 text-sm font-normal ">
           © {new Date().getFullYear()} Webs Optimization Software Solution.
         </div>
-
         <Toaster reverseOrder={false} position="top-center" />
       </div>
 

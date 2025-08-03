@@ -10,8 +10,10 @@ import { useRouter } from "next/navigation";
 import { signUpSchema } from "@/shared/formSchema";
 import ButtonLoader from "../common/buttonLoader";
 import { useApi } from "@/services/apiServices";
+import { useAuth } from "@/context/authContext";
 
 const Signup = () => {
+  const { setIsAuthenticated } = useAuth();
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -38,7 +40,7 @@ const Signup = () => {
         router.push("/articles");
         localStorage.setItem("token", token);
         localStorage.setItem("authUser", JSON.stringify(user));
-
+        setIsAuthenticated(true);
         toast.success(message || "Signup successful");
       } catch (error: any) {
         console.error("Signup error:", error.message);

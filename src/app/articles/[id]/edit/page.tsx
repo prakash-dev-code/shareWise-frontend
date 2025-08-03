@@ -67,7 +67,7 @@ export default function EditArticlePage() {
         content: values.content,
       });
       message.success("Article updated successfully");
-      router.push(`/articles/${id}`);
+      router.push(`/articles`);
     } catch (error) {
       message.error("Failed to update article");
     } finally {

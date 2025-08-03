@@ -10,10 +10,12 @@ import toast from "react-hot-toast";
 import ButtonLoader from "../common/buttonLoader";
 import { signInSchema } from "@/shared/formSchema";
 import { useApi } from "@/services/apiServices";
+import { useAuth } from "@/context/authContext";
 
 const Signin = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [loading, setLoading] = useState(false);
+  const { setIsAuthenticated } = useAuth();
   const router = useRouter();
   const { signIN } = useApi();
   const formik = useFormik({
@@ -35,7 +37,7 @@ const Signin = () => {
         router.push("/articles");
         localStorage.setItem("token", token);
         localStorage.setItem("authUser", JSON.stringify(user));
-
+        setIsAuthenticated(true);
         toast.success(message || "Signin successful");
 
         setLoading(false);
